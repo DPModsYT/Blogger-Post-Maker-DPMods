@@ -3,302 +3,431 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DPMods Studio | V3 Generator</title>
+    <title>DPMods Engine | Ultimate Console</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- GLOBAL THEME: Deep Space Glass --- */
+        /* --- CORE VARIABLES --- */
         :root {
-            --primary: #d400ff;
-            --secondary: #00e5ff;
-            --bg-dark: #0a0a12;
-            --glass: rgba(20, 20, 30, 0.7);
-            --border: rgba(255, 255, 255, 0.1);
+            --bg-deep: #050505;
+            --glass-surface: rgba(20, 20, 25, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.03);
+            --neon-primary: #00f3ff; /* Cyber Blue */
+            --neon-secondary: #bc13fe; /* Electric Purple */
+            --text-main: #e0e0e0;
+            --text-muted: #6b7280;
+            --font-ui: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
         }
 
+        /* --- GLOBAL RESET & BG --- */
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: radial-gradient(circle at top right, #1a0b2e, #000000);
-            color: #fff;
             margin: 0;
-            padding: 0;
-            min-height: 100vh;
-        }
-
-        /* --- LAYOUT --- */
-        .app-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Desktop: Split View */
-            gap: 20px;
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 20px;
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.08), transparent 25%), 
+                radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.08), transparent 25%);
+            color: var(--text-main);
+            font-family: var(--font-ui);
             height: 100vh;
-            box-sizing: border-box;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* --- GLASS PANELS --- */
-        .glass-panel {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 24px;
-            overflow-y: auto;
+        /* Scanline Overlay */
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 3px;
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0.3;
+        }
+
+        /* --- LAYOUT GRID --- */
+        .engine-container {
+            display: grid;
+            grid-template-columns: 80px 1fr 400px; /* Sidebar | Editor | Preview */
+            width: 95vw;
+            height: 90vh;
+            gap: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- GLASS PANELS (The "Hard Glass" Look) --- */
+        .panel {
+            background: var(--glass-surface);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-top: 1px solid rgba(255,255,255,0.15); /* Top highlight */
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
             display: flex;
             flex-direction: column;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
         }
 
-        /* --- SCROLLBAR --- */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-
-        /* --- TYPOGRAPHY --- */
-        h2 {
-            margin: 0 0 20px 0;
-            font-size: 1.4rem;
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-transform: uppercase;
-            font-weight: 900;
-            letter-spacing: 1px;
+        /* Glowing corner accents */
+        .panel::before {
+            content: '';
+            position: absolute; top: -1px; left: -1px;
+            width: 40px; height: 40px;
+            border-top: 2px solid var(--neon-primary);
+            border-left: 2px solid var(--neon-primary);
+            border-radius: 16px 0 0 0;
+            opacity: 0.6;
+            pointer-events: none;
         }
 
-        label {
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 6px;
-            display: block;
-            text-transform: uppercase;
+        /* --- SIDEBAR --- */
+        .sidebar {
+            align-items: center;
+            padding: 20px 0;
+            gap: 20px;
+        }
+        .brand-logo {
+            font-family: var(--font-code);
+            font-weight: 800;
+            color: var(--neon-primary);
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+        .nav-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid transparent;
+        }
+        .nav-icon.active, .nav-icon:hover {
+            color: var(--neon-primary);
+            background: rgba(0, 243, 255, 0.1);
+            border-color: rgba(0, 243, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        /* --- EDITOR AREA --- */
+        .editor-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .editor-title {
+            font-family: var(--font-code);
             font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-main);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .status-indicator {
+            width: 8px; height: 8px;
+            background: #0f0;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #0f0;
+            animation: pulse 2s infinite;
         }
 
-        /* --- INPUTS --- */
-        .input-group { margin-bottom: 15px; }
+        .editor-content {
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        /* Complex Inputs */
+        .input-group { margin-bottom: 20px; position: relative; }
         
+        label {
+            font-family: var(--font-code);
+            font-size: 11px;
+            color: var(--neon-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
         input, textarea, select {
             width: 100%;
             background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--border);
+            border: 1px solid var(--glass-border);
             color: #fff;
             padding: 14px;
-            border-radius: 12px;
+            border-radius: 6px;
+            font-family: var(--font-ui);
             font-size: 14px;
-            box-sizing: border-box;
-            font-family: inherit;
             transition: 0.3s;
+            box-sizing: border-box;
         }
 
         input:focus, textarea:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(212, 0, 255, 0.2);
-            background: rgba(0, 0, 0, 0.6);
+            border-color: var(--neon-primary);
+            background: rgba(0, 243, 255, 0.05);
+            box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05);
         }
 
-        /* --- BUTTONS --- */
-        .btn {
-            background: linear-gradient(90deg, var(--primary), #9900ff);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 14px;
-            font-weight: 800;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.2s;
-            margin-top: 10px;
-            box-shadow: 0 5px 20px rgba(212, 0, 255, 0.3);
-        }
-        .btn:active { transform: scale(0.98); }
-        
-        .btn-outline {
-            background: transparent;
-            border: 1px dashed var(--border);
-            color: #aaa;
-            box-shadow: none;
-        }
-        .btn-outline:hover {
-            border-color: var(--secondary);
-            color: var(--secondary);
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-secondary); }
 
-        /* --- LINK MANAGER --- */
-        .link-item {
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 10px;
-            position: relative;
-            border: 1px solid transparent;
-        }
-        .link-item:hover { border-color: rgba(255,255,255,0.1); }
-        .remove-link {
-            position: absolute; right: 10px; top: 10px;
-            background: #ff3333; color: white;
-            border: none; width: 24px; height: 24px;
-            border-radius: 50%; cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* --- PREVIEW BOX (PHONE) --- */
-        .preview-wrapper {
+        /* --- PREVIEW AREA --- */
+        .preview-panel {
+            padding: 0;
             background: #000;
-            border-radius: 30px;
-            border: 8px solid #222;
-            height: 100%;
-            overflow: hidden;
-            position: relative;
         }
-
+        .preview-header {
+            padding: 15px;
+            background: rgba(20,20,20,0.8);
+            border-bottom: 1px solid #333;
+            text-align: center;
+            font-family: var(--font-code);
+            font-size: 12px;
+            color: #666;
+        }
         #previewContainer {
             height: 100%;
             overflow-y: auto;
-            padding: 20px;
-            background: #0f0f1a; /* Dark background for preview */
-            color: #fff;
-        }
-
-        /* !!! CRITICAL FIX: Hide Style Tags in Preview !!! */
-        #previewContainer style {
-            display: none !important;
-        }
-
-        .code-output {
-            background: #111;
-            color: #0f0;
-            font-family: monospace;
             padding: 15px;
-            border-radius: 12px;
-            height: 150px;
-            margin-top: 20px;
+            background: #0d0d0d;
+        }
+        /* HIDE STYLE TAGS IN PREVIEW */
+        #previewContainer style { display: none !important; }
+
+        /* --- BUTTONS --- */
+        .btn-action {
+            width: 100%;
+            background: linear-gradient(90deg, var(--neon-secondary), #9000ff);
+            color: white;
+            border: none;
+            padding: 16px;
+            font-family: var(--font-code);
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+            margin-top: 10px;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+        
+        .btn-action:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+        }
+        .btn-action::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        .btn-action:hover::after { left: 100%; }
+
+        .btn-add {
+            background: transparent;
+            border: 1px dashed var(--glass-border);
+            color: var(--text-muted);
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            font-family: var(--font-code);
             font-size: 12px;
-            border: 1px solid #333;
+            transition: 0.3s;
+        }
+        .btn-add:hover {
+            border-color: var(--neon-primary);
+            color: var(--neon-primary);
+            background: rgba(0,243,255,0.05);
         }
 
-        /* --- MOBILE RESPONSIVE --- */
-        @media (max-width: 900px) {
-            .app-container {
-                grid-template-columns: 1fr;
+        /* --- LINK ITEMS --- */
+        .link-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            background: rgba(255,255,255,0.02);
+            padding: 15px;
+            border-left: 2px solid var(--neon-primary);
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .remove-btn {
+            position: absolute; right: 5px; top: 5px;
+            background: none; border: none; color: #ff3333;
+            cursor: pointer; font-weight: bold;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .panel { animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .sidebar { animation-delay: 0s; }
+        .editor-panel { animation-delay: 0.1s; }
+        .preview-panel { animation-delay: 0.2s; }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 1024px) {
+            body { height: auto; overflow-y: auto; display: block; padding: 20px 0; }
+            .engine-container {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
                 height: auto;
                 padding: 10px;
+                box-sizing: border-box;
             }
-            .glass-panel {
+            .sidebar { 
+                flex-direction: row; 
+                justify-content: space-between; 
+                padding: 10px 20px;
                 height: auto;
-                border-radius: 16px;
-                padding: 15px;
             }
-            .preview-wrapper {
-                height: 500px; /* Fixed height for mobile preview */
-            }
-            body { background: #0a0a12; }
+            .nav-icon { width: auto; height: auto; padding: 10px; font-size: 14px; gap: 5px; }
+            .preview-panel { height: 600px; }
         }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    
-    <div class="glass-panel">
-        <h2>🛠️ Post Editor</h2>
+    <div class="engine-container">
         
-        <div class="input-group">
-            <label>Thumbnail URL</label>
-            <input type="text" id="thumbUrl" placeholder="https://...">
+        <div class="panel sidebar">
+            <div class="brand-logo">DP</div>
+            
+            <div class="nav-icon active" title="Editor">⚡</div>
+            <div class="nav-icon" title="Settings">⚙️</div>
+            <div class="nav-icon" title="Assets">📁</div>
+            <div style="flex-grow:1"></div>
+            <div class="nav-icon" title="Logout">🚫</div>
         </div>
 
-        <div class="input-group">
-            <label>Main Title</label>
-            <input type="text" id="postTitle" placeholder="Ultimate Key System V3">
-        </div>
-
-        <div class="input-group">
-            <label>Subtitle / Hook</label>
-            <input type="text" id="postSubtitle" placeholder="Unhackable Server Time & Security">
-        </div>
-
-        <div class="input-group">
-            <label>Intro Text</label>
-            <textarea id="introText" rows="3" placeholder="Welcome to the future..."></textarea>
-        </div>
-
-        <div class="input-group">
-            <label>Features (Add emojis)</label>
-            <textarea id="featuresList" rows="5" placeholder="🛡️ Anti-Tamper Security...&#10;⏳ Unhackable Server Time..."></textarea>
-        </div>
-
-        <label style="color:var(--secondary); margin-top:10px;">DOWNLOAD BUTTONS</label>
-        <div id="downloadsContainer"></div>
-        <button type="button" class="btn btn-outline" onclick="addLinkInput()">+ Add Download Button</button>
-
-        <div class="input-group" style="margin-top:20px;">
-            <label>🔐 File Password</label>
-            <input type="text" id="filePassword" value="bydp">
-        </div>
-
-        <div class="input-group">
-            <label>SEO Tags</label>
-            <input type="text" id="seoTags" placeholder="#DPMods, #KeySystem...">
-        </div>
-
-        <button type="button" class="btn" onclick="generatePost()">✨ GENERATE CODE</button>
-    </div>
-
-    <div class="glass-panel">
-        <h2>📱 Live Preview</h2>
-        <div class="preview-wrapper">
-            <div id="previewContainer">
-                <div style="text-align:center; padding-top:50%; color:#555;">
-                    Hit "Generate" to see preview...
+        <div class="panel editor-panel">
+            <div class="editor-header">
+                <div class="editor-title">
+                    <div class="status-indicator"></div>
+                    DPMods Engine v4.0
                 </div>
+                <div style="font-family: var(--font-code); font-size: 10px; opacity: 0.5;">READY</div>
+            </div>
+
+            <div class="editor-content">
+                
+                <div class="input-group">
+                    <label>Thumbnail URL</label>
+                    <input type="text" id="thumbUrl" placeholder="https://image-link.com/..." oninput="generatePost()">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="input-group">
+                        <label>Title</label>
+                        <input type="text" id="postTitle" placeholder="Ultimate Key System" oninput="generatePost()">
+                    </div>
+                    <div class="input-group">
+                        <label>Subtitle / Hook</label>
+                        <input type="text" id="postSubtitle" placeholder="Unhackable Security" oninput="generatePost()">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Intro Text</label>
+                    <textarea id="introText" rows="2" placeholder="Welcome to the future..." oninput="generatePost()"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>Features List (Format: **Bold** text)</label>
+                    <textarea id="featuresList" rows="4" placeholder="🛡️ Anti-Tamper Security...&#10;⏳ Unhackable Server Time..." oninput="generatePost()"></textarea>
+                </div>
+
+                <label>Download Links Database</label>
+                <div id="downloadsContainer"></div>
+                <button type="button" class="btn-add" onclick="addLinkInput()">+ ADD DOWNLOAD LINK</button>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+                    <div class="input-group">
+                        <label>🔐 Zip Password</label>
+                        <input type="text" id="filePassword" value="bydp" oninput="generatePost()">
+                    </div>
+                    <div class="input-group">
+                        <label>SEO Tags</label>
+                        <input type="text" id="seoTags" placeholder="#DPMods, #KeySystem..." oninput="generatePost()">
+                    </div>
+                </div>
+
+                <button type="button" class="btn-action" onclick="copyCode()">
+                    &lt;/&gt; GENERATE & COPY CODE
+                </button>
+                <textarea id="finalCode" style="height: 0; opacity: 0; position: absolute;"></textarea>
+
             </div>
         </div>
 
-        <h2 style="margin-top:20px; font-size:1rem;">Source Code</h2>
-        <textarea id="finalCode" class="code-output" readonly></textarea>
-        <button type="button" class="btn btn-outline" style="margin-top:0;" onclick="copyCode()">📋 Copy HTML</button>
+        <div class="panel preview-panel">
+            <div class="preview-header">LIVE ANDROID PREVIEW</div>
+            <div id="previewContainer">
+                <p style="text-align: center; color: #555; margin-top: 50%;">Waiting for input signal...</p>
+            </div>
+        </div>
+
     </div>
 
-</div>
-
 <script>
-    // 1. ADD LINK INPUTS
+    // --- APP LOGIC ---
+
     function addLinkInput(title = "", sub = "", url = "", icon = "📦") {
         const container = document.getElementById('downloadsContainer');
         const div = document.createElement('div');
         div.className = 'link-item';
         div.innerHTML = `
-            <button class="remove-link" onclick="this.parentElement.remove()">×</button>
-            <input type="text" class="dl-title" placeholder="Button Title" value="${title}" style="margin-bottom:5px">
-            <input type="text" class="dl-sub" placeholder="Subtitle" value="${sub}" style="margin-bottom:5px">
-            <input type="text" class="dl-url" placeholder="Download Link" value="${url}" style="margin-bottom:5px">
-            <select class="dl-icon">
-                <option value="📦" ${icon === '📦' ? 'selected' : ''}>📦 Package</option>
-                <option value="🔧" ${icon === '🔧' ? 'selected' : ''}>🔧 Tool</option>
-                <option value="📁" ${icon === '📁' ? 'selected' : ''}>📁 MT Manager</option>
-                <option value="🔗" ${icon === '🔗' ? 'selected' : ''}>🔗 Link</option>
+            <button class="remove-btn" onclick="this.parentElement.remove(); generatePost()">x</button>
+            <input type="text" class="dl-title" placeholder="Button Title" value="${title}" oninput="generatePost()" style="grid-column: span 2">
+            <input type="text" class="dl-sub" placeholder="Subtitle" value="${sub}" oninput="generatePost()">
+            <select class="dl-icon" onchange="generatePost()">
+                <option value="📦" ${icon === '📦' ? 'selected' : ''}>📦</option>
+                <option value="🔧" ${icon === '🔧' ? 'selected' : ''}>🔧</option>
+                <option value="📁" ${icon === '📁' ? 'selected' : ''}>📁</option>
+                <option value="🔗" ${icon === '🔗' ? 'selected' : ''}>🔗</option>
             </select>
+            <input type="text" class="dl-url" placeholder="URL" value="${url}" oninput="generatePost()" style="grid-column: span 2">
         `;
         container.appendChild(div);
+        generatePost();
     }
 
-    // 2. DEFAULT DATA
+    // Initialize
     window.onload = function() {
-        addLinkInput("Key System Resources", "Java & XML", "", "📦");
-        addLinkInput("MT Manager", "Latest Version", "https://t.me/dp_mods/29826", "📁");
-        // Demo Data
+        addLinkInput("Key System V3", "Java & XML", "", "📦");
+        addLinkInput("MT Manager", "Latest Version", "https://t.me/dp_mods", "📁");
+        // Set Default Data
         document.getElementById('thumbUrl').value = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi5a9Aem6F06FvnHWM98smFD_OHKux4voThwVZlmNTRbdtb_vstvOmlAX1XI5UaY38NLVvxv1glJoIkY3zVJvzCMgGdGlyZrMNE1r2adlrxhAFOFi5Pwoj7SSa-3CySHU2sqzDPysAjNdJts_6G3b_GQHzIkvG9o1eEmzhudSF6ge8ey23Of5Ej8dksupNo/s1280/Dark%20Blue%20and%20Yellow%20Bold%20Modern%20Professional%20Attractive%20YouTube%20Thumbnail.png";
+        generatePost();
     };
 
-    // 3. GENERATE FUNCTION
     function generatePost() {
-        // Get Values
+        // Gather Data
         const thumb = document.getElementById('thumbUrl').value;
         const title = document.getElementById('postTitle').value;
         const subtitle = document.getElementById('postSubtitle').value;
@@ -307,7 +436,7 @@
         const pass = document.getElementById('filePassword').value;
         const tags = document.getElementById('seoTags').value;
 
-        // HTML for Features
+        // Process Features
         let featuresHTML = "";
         featuresRaw.split('\n').forEach(line => {
             if(line.trim()) {
@@ -316,7 +445,7 @@
             }
         });
 
-        // HTML for Downloads
+        // Process Links
         let downloadsHTML = '<div class="dp-download-grid">';
         document.querySelectorAll('.link-item').forEach(group => {
             const t = group.querySelector('.dl-title').value;
@@ -337,10 +466,10 @@
         });
         downloadsHTML += '</div>';
 
-        // FINAL TEMPLATE
+        // THE TEMPLATE (Output)
         const template = `
 <style>
-/* DPMods V3 Style */
+/* DPMods V4 Premium Style */
 .rainbow-heading { background: linear-gradient(to right, #66ff66, #00ffff, #6666ff, #ff00ff, #ff6666, #ffff00, #66ff66); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rainbow-scroll 6s linear infinite; }
 @keyframes rainbow-scroll { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
 .dpmods-post-container { background: none; line-height: 1.7; font-family: 'Segoe UI', sans-serif; color: #f1f1f1; }
@@ -417,15 +546,18 @@ window.revealPassword = function() {
 document.addEventListener("DOMContentLoaded", function() {});
 <\/script>`;
 
+        // Update UI
         document.getElementById('finalCode').value = template;
-        document.getElementById('previewContainer').innerHTML = template;
+        const preview = document.getElementById('previewContainer');
+        preview.innerHTML = template;
     }
 
     function copyCode() {
+        generatePost(); // Ensure latest
         const c = document.getElementById("finalCode");
         c.select();
         navigator.clipboard.writeText(c.value);
-        alert("✅ HTML Copied! Paste into Blogger HTML view.");
+        alert("✅ ENGINE OUTPUT COPIED!");
     }
 </script>
 </body>
