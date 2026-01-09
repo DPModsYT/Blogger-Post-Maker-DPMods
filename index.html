@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DPMods Studio | Post Generator</title>
+    <style>
+        /* --- GLOBAL THEME (Cyberpunk Glass) --- */
+        :root {
+            --primary: #d400ff;
+            --secondary: #00e5ff;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
+            --bg-dark: #0f0c29;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-attachment: fixed;
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 1400px;
+            padding: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* --- SCROLLBARS --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        /* --- GLASS PANELS --- */
+        .glass-panel {
+            background: rgba(18, 18, 28, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+        }
+
+        /* --- INPUTS & FORMS --- */
+        .input-group { position: relative; margin-bottom: 10px; }
+        
+        label {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 5px;
+            display: block;
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            border-radius: 10px;
+            font-family: inherit;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+        }
+
+        textarea { resize: vertical; }
+
+        /* --- BUTTONS --- */
+        .btn {
+            background: linear-gradient(90deg, var(--primary), #8e2de2);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(212, 0, 255, 0.3);
+        }
+
+        .btn:active { transform: scale(0.98); }
+        .btn-secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); box-shadow: none; }
+        .btn-green { background: linear-gradient(90deg, #11998e, #38ef7d); box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3); }
+
+        /* --- LINK MANAGER --- */
+        .link-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .remove-btn {
+            position: absolute;
+            top: 10px; right: 10px;
+            background: #ff4b2b;
+            color: white;
+            border: none;
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* --- PREVIEW PHONE MOCKUP --- */
+        .phone-mockup {
+            border: 8px solid #1a1a1a;
+            border-radius: 20px;
+            background: #121212; /* Default Dark Mode */
+            overflow-y: auto;
+            height: 100%;
+            padding: 15px;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+        
+        .code-box {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: var(--secondary);
+            height: 150px;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                height: auto;
+                padding: 10px;
+            }
+            body { height: auto; }
+            .glass-panel { max-height: none; height: auto; }
+            .phone-mockup { height: 500px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div class="glass-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>🛠️ DPMods Studio</h2>
+            <span style="font-size:12px; color:#aaa;">v3.0 Generator</span>
+        </div>
+
+        <div class="input-group">
+            <label>Thumbnail Image URL</label>
+            <input type="text" id="thumbUrl" placeholder="https://...">
+        </div>
+
+        <div class="input-group">
+            <label>Post Title</label>
+            <input type="text" id="postTitle" placeholder="Ultimate Key System V3">
+        </div>
+
+        <div class="input-group">
+            <label>Subtitle / Hook</label>
+            <input type="text" id="postSubtitle" placeholder="Unhackable Server Time & Security">
+        </div>
+
+        <div class="input-group">
+            <label>Intro (Paragraph 1)</label>
+            <textarea id="introText" rows="3" placeholder="Welcome to the future of Android Security..."></textarea>
+        </div>
+
+        <div class="input-group">
+            <label>Description (Paragraph 2)</label>
+            <textarea id="descText" rows="3" placeholder="This system uses Google Server Time..."></textarea>
+        </div>
+
+        <div class="input-group">
+            <label>Features (Add emojis per line)</label>
+            <textarea id="featuresList" rows="5" placeholder="🛡️ Anti-Tamper Security...&#10;⏳ Unhackable Server Time..."></textarea>
+        </div>
+
+        <label style="color:var(--secondary); margin-top:10px;">DOWNLOAD BUTTONS</label>
+        <div id="downloadsContainer"></div>
+        <button type="button" class="btn btn-secondary" onclick="addLinkInput()">+ Add Button</button>
+
+        <div class="input-group" style="margin-top:20px;">
+            <label>🔐 File Password</label>
+            <input type="text" id="filePassword" value="bydp">
+        </div>
+
+        <div class="input-group">
+            <label>SEO Tags</label>
+            <input type="text" id="seoTags" placeholder="#DPMods, #KeySystem...">
+        </div>
+
+        <button type="button" class="btn btn-green" onclick="generatePost()">✨ GENERATE & PREVIEW</button>
+    </div>
+
+    <div class="glass-panel">
+        <h2>📱 Android Preview</h2>
+        <div class="phone-mockup" id="previewContainer">
+            <p style="text-align:center; color:#555; margin-top:50%;">Preview will appear here...</p>
+        </div>
+
+        <h2 style="margin-top:20px;">💻 Blogger HTML Code</h2>
+        <textarea id="finalCode" class="code-box" readonly></textarea>
+        <button type="button" class="btn" onclick="copyCode()">📋 COPY CODE</button>
+    </div>
+
+</div>
+
+<script>
+    // --- 1. DYNAMIC LINK INPUTS ---
+    function addLinkInput(title = "", sub = "", url = "", icon = "📦") {
+        const container = document.getElementById('downloadsContainer');
+        const div = document.createElement('div');
+        div.className = 'link-item';
+        div.innerHTML = `
+            <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
+            <input type="text" class="dl-title" placeholder="Button Title" value="${title}" style="margin-bottom:8px;">
+            <input type="text" class="dl-sub" placeholder="Subtitle" value="${sub}" style="margin-bottom:8px;">
+            <input type="text" class="dl-url" placeholder="Download URL" value="${url}" style="margin-bottom:8px;">
+            <select class="dl-icon">
+                <option value="📦" ${icon === '📦' ? 'selected' : ''}>📦 Package</option>
+                <option value="🔧" ${icon === '🔧' ? 'selected' : ''}>🔧 Tool</option>
+                <option value="📁" ${icon === '📁' ? 'selected' : ''}>📁 MT Manager</option>
+                <option value="🔗" ${icon === '🔗' ? 'selected' : ''}>🔗 Link</option>
+            </select>
+        `;
+        container.appendChild(div);
+    }
+
+    // --- 2. LOAD DEFAULT DATA ---
+    window.onload = function() {
+        addLinkInput("Key System Resources", "Java & XML", "", "📦");
+        addLinkInput("MT Manager", "Latest Version", "https://t.me/dp_mods/29826", "📁");
+        
+        // Demo Data
+        document.getElementById('thumbUrl').value = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi5a9Aem6F06FvnHWM98smFD_OHKux4voThwVZlmNTRbdtb_vstvOmlAX1XI5UaY38NLVvxv1glJoIkY3zVJvzCMgGdGlyZrMNE1r2adlrxhAFOFi5Pwoj7SSa-3CySHU2sqzDPysAjNdJts_6G3b_GQHzIkvG9o1eEmzhudSF6ge8ey23Of5Ej8dksupNo/s1280/Dark%20Blue%20and%20Yellow%20Bold%20Modern%20Professional%20Attractive%20YouTube%20Thumbnail.png";
+    };
+
+    // --- 3. GENERATE POST ---
+    function generatePost() {
+        const thumb = document.getElementById('thumbUrl').value;
+        const title = document.getElementById('postTitle').value;
+        const subtitle = document.getElementById('postSubtitle').value;
+        const intro = document.getElementById('introText').value;
+        const desc = document.getElementById('descText').value;
+        const featuresRaw = document.getElementById('featuresList').value;
+        const pass = document.getElementById('filePassword').value;
+        const tags = document.getElementById('seoTags').value;
+
+        // Process Features
+        let featuresHTML = "";
+        featuresRaw.split('\n').forEach(line => {
+            if(line.trim()) {
+                let formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                featuresHTML += `<li>${formatted}</li>\n`;
+            }
+        });
+
+        // Process Downloads
+        let downloadsHTML = '<div class="dp-download-grid">';
+        document.querySelectorAll('.link-item').forEach(group => {
+            const lTitle = group.querySelector('.dl-title').value;
+            const lSub = group.querySelector('.dl-sub').value;
+            const lUrl = group.querySelector('.dl-url').value;
+            const lIcon = group.querySelector('.dl-icon').value;
+            if(lTitle) {
+                downloadsHTML += `
+    <a href="${lUrl}" class="dp-glass-btn" target="_blank">
+        <span class="dp-btn-icon">${lIcon}</span>
+        <div class="dp-btn-text">
+            <span class="dp-btn-title">${lTitle}</span>
+            <span class="dp-btn-sub">${lSub}</span>
+        </div>
+        <span class="dp-arrow">➔</span>
+    </a>`;
+            }
+        });
+        downloadsHTML += '</div>';
+
+        // HTML TEMPLATE
+        const html = `
+<style>
+/* --- DPMods Premium Style V3 --- */
+.rainbow-heading {
+    background: linear-gradient(to right, #66ff66, #00ffff, #6666ff, #ff00ff, #ff6666, #ffff00, #66ff66);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: rainbow-scroll 6s linear infinite;
+}
+@keyframes rainbow-scroll { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+.dpmods-post-container { background: none; line-height: 1.7; font-family: 'Segoe UI', sans-serif; color: #f1f1f1; }
+.dpmods-post-container h4 { border-bottom: 2px solid #3b3054; padding-bottom: 8px; margin-top: 30px; margin-bottom: 15px; font-weight: bold; font-size: 1.2em; color: #e0e0e0; }
+.dpmods-post-container ul { list-style-type: none; background-color: #231a33; border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 0, 204, 0.2); }
+.dpmods-post-container ul li { margin-bottom: 12px; position: relative; padding-left: 1.5em; color: #d1d1d1; }
+.dpmods-post-container ul li::before { content: "⚡"; position: absolute; left: 0; }
+.dpmods-post-container a { color: #ff00cc; text-decoration: none; font-weight: bold; }
+
+/* Buttons */
+.dp-download-grid { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
+.dp-glass-btn { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(106, 17, 203, 0.2), rgba(255, 0, 136, 0.2)); border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #d400ff; padding: 15px 20px; border-radius: 12px; text-decoration: none !important; transition: all 0.3s ease; backdrop-filter: blur(10px); }
+.dp-glass-btn:hover { transform: translateY(-3px); border-left: 4px solid #00ffff; background: linear-gradient(135deg, rgba(106, 17, 203, 0.4), rgba(255, 0, 136, 0.4)); }
+.dp-btn-title { font-weight: bold; font-size: 16px; color: #fff !important; display:block; }
+.dp-btn-sub { font-size: 12px; color: #ffccff !important; opacity: 0.8; }
+.dp-btn-icon { font-size: 24px; margin-right: 15px; }
+.dp-arrow { color: #fff; opacity: 0.7; font-size: 20px; }
+
+/* Password Box */
+.dp-password-container { background: linear-gradient(145deg, #2a203b, #1e1628); border-radius: 12px; padding: 20px; margin-top: 30px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.dp-unlock-btn { background: linear-gradient(90deg, #ff00cc, #333399); color: white; padding: 10px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.dp-unlock-btn:hover { transform: scale(1.05); }
+.dp-password-text { display: none; margin-top:10px; font-size: 18px; color: #00ffff; font-weight: bold; text-align: center; border: 1px dashed #00ffff; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); }
+</style>
+
+<div class="dpmods-post-container">
+    <div class="separator" style="clear: both; text-align: center;">
+        <img border="0" src="${thumb}" width="640" style="border-radius: 10px; max-width:100%; height:auto;" />
+    </div><br />
+    
+    <div class="separator" style="clear: both; text-align: center;">
+        <span style="text-align: left;">🛡️ </span>
+        <strong style="text-align: left;">${title} — ${subtitle} | By DPMods</strong>
+    </div>
+
+    <p>${intro}</p>
+    <p>${desc}</p>
+
+    <h4 class="rainbow-heading">✨ <strong>Features:</strong></h4>
+    <ul>${featuresHTML}</ul>
+
+    <h4>✨ <strong>Download Section:</strong></h4>
+    ${downloadsHTML}
+
+    <div class="dp-password-container">
+        <div id="dp-lock-wrapper">
+            <h4 style="margin-top:0; border:none;">🔐 File Password:</h4>
+            <button class="dp-unlock-btn" onclick="window.revealPassword()">Unlock Password ⏳</button>
+        </div>
+        <div class="dp-password-text" id="dp-password-result"></div>
+    </div>
+
+    <h4>💬 <strong>Connect with DPMods:</strong></h4>
+    <p>
+        🌐 <strong>Website:</strong> <a href="https://www.dpmods.com">https://www.dpmods.com</a><br />
+        📢 <strong>Telegram Channel:</strong> <a href="https://t.me/dp_mods">https://t.me/dp_mods</a><br />
+        🎥 <strong>YouTube:</strong> <a href="https://www.youtube.com/@dpmods">https://www.youtube.com/@dpmods</a>
+    </p>
+
+    <p>💥 Don’t forget to <strong>Like, Share & Subscribe</strong>! 💥</p>
+    
+    <h4>🔖 <strong>Tags</strong></h4>
+    <p>${tags}</p>
+</div>
+
+<script>
+window.revealPassword = function() {
+    var btn = document.querySelector('.dp-unlock-btn');
+    var wrapper = document.getElementById('dp-lock-wrapper');
+    var result = document.getElementById('dp-password-result');
+    if (!btn || !wrapper || !result) return;
+    btn.innerHTML = "Wait 5s... 🔄"; btn.style.opacity = "0.7"; btn.disabled = true;
+    setTimeout(function() {
+        wrapper.style.display = 'none'; result.style.display = 'block';
+        result.innerHTML = "🔑 Password: <span style='color: #66ff66; font-size: 22px; margin-left: 10px;'>${pass}</span>";
+    }, 5000);
+};
+document.addEventListener("DOMContentLoaded", function() {});
+<\/script>`;
+
+        document.getElementById('finalCode').value = html;
+        document.getElementById('previewContainer').innerHTML = html;
+        // Adjust preview container for better mobile view simulation
+        document.getElementById('previewContainer').style.background = "#0f0f0f";
+        document.getElementById('previewContainer').style.padding = "20px";
+    }
+
+    function copyCode() {
+        const copyText = document.getElementById("finalCode");
+        copyText.select();
+        navigator.clipboard.writeText(copyText.value);
+        alert("✅ Code Copied!");
+    }
+</script>
+</body>
+</html>
