@@ -3,77 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DPMods Studio | V8 Dark</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <title>DPMods Studio | V9 Glass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <style>
-        /* --- STUDIO DARK THEME V8 --- */
+        /* --- IPHONE 16 GLASS THEME --- */
         :root {
-            --bg-body: #050507;
-            --panel-bg: #09090b;
-            --input-bg: #0f0f11;
-            --border: #27272a;
-            --border-active: #a855f7;
-            --primary-grad: linear-gradient(90deg, #8b5cf6, #06b6d4);
+            --bg-body: #000000;
+            --panel-glass: rgba(28, 28, 30, 0.65); /* Apple Dark Glass */
+            --input-bg: rgba(44, 44, 46, 0.6);
+            --border: rgba(255, 255, 255, 0.12);
+            --border-highlight: rgba(255, 255, 255, 0.2);
+            --primary: #0a84ff; /* iOS Blue */
+            --accent-grad: linear-gradient(90deg, #5e5ce6, #0a84ff);
             --text-main: #ffffff;
-            --text-muted: #71717a;
-            --font-ui: 'Manrope', sans-serif;
+            --text-muted: #8e8e93;
+            --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --radius-lg: 20px;
+            --radius-sm: 12px;
         }
 
         body {
             margin: 0;
             background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(circle at 0% 0%, #1c1c1e 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, #1c1c1e 0%, transparent 50%);
             color: var(--text-main);
             font-family: var(--font-ui);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 30px;
+            padding: 20px;
             box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Subtle Glow in Background */
+        /* Ambient Glow */
         body::before {
-            content: ""; position: fixed; bottom: -20vh; right: -20vw; width: 60vw; height: 60vh;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%);
+            content: ""; position: fixed; top: -20vh; left: 20vw; width: 60vw; height: 60vh;
+            background: radial-gradient(circle, rgba(94, 92, 230, 0.15), transparent 70%);
             pointer-events: none; z-index: -1;
         }
 
-        /* --- LAYOUT --- */
+        /* --- LAYOUT GRID --- */
         .engine-container {
-            display: grid; grid-template-columns: 1fr 420px; gap: 30px;
-            width: 100%; max-width: 1600px; height: 90vh;
+            display: grid; grid-template-columns: 1fr 400px; gap: 24px;
+            width: 100%; max-width: 1600px; height: 92vh;
         }
 
-        /* --- EDITOR PANEL --- */
-        .panel {
-            background: var(--panel-bg);
+        /* --- GLASS PANEL (Shared) --- */
+        .glass-panel {
+            background: var(--panel-glass);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            display: flex; flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            display: flex; flex-direction: column; overflow: hidden;
         }
 
+        /* --- EDITOR HEADER --- */
         .editor-header {
-            padding: 20px 30px;
+            padding: 18px 24px;
             border-bottom: 1px solid var(--border);
             display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.02);
         }
-        .brand { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
-        .version-badge { 
-            font-size: 11px; font-weight: 700; background: #18181b; 
-            border: 1px solid #3f3f46; padding: 4px 8px; border-radius: 6px; color: #a1a1aa;
+        .brand { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+        .badge { 
+            font-size: 11px; font-weight: 600; background: rgba(255,255,255,0.1); 
+            padding: 4px 8px; border-radius: 6px; color: #fff;
         }
 
-        .scroll-area { padding: 30px; overflow-y: auto; flex-grow: 1; }
+        .scroll-area { padding: 24px; overflow-y: auto; flex-grow: 1; }
 
-        /* --- INPUTS --- */
-        .input-group { margin-bottom: 24px; }
+        /* --- GRID INPUTS (Top Section) --- */
+        .meta-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;
+        }
+        .meta-full { grid-column: span 2; }
+
+        /* --- INPUT STYLING --- */
+        .input-wrapper { margin-bottom: 0; }
         
         label {
-            font-size: 10px; color: var(--text-muted); font-weight: 700; 
-            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block;
+            font-size: 11px; color: var(--text-muted); font-weight: 600; 
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block;
         }
 
         input, textarea {
@@ -82,106 +97,106 @@
             border: 1px solid var(--border);
             color: white;
             padding: 14px;
-            border-radius: 10px;
+            border-radius: var(--radius-sm);
             font-family: var(--font-ui);
             font-size: 14px;
             box-sizing: border-box;
-            transition: 0.2s;
+            transition: 0.2s ease;
         }
         input:focus, textarea:focus {
-            outline: none; border-color: #8b5cf6; 
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            outline: none; border-color: #5e5ce6; background: rgba(60, 60, 65, 0.8);
+            box-shadow: 0 0 0 4px rgba(94, 92, 230, 0.15);
         }
+        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
 
-        /* Features Box Special Style */
+        /* Feature Box Specifics */
         #featuresList {
-            border: 1px solid #8b5cf6; /* Purple border like screenshot */
-            background: rgba(139, 92, 246, 0.03);
+            background: rgba(94, 92, 230, 0.05); border: 1px solid rgba(94, 92, 230, 0.3);
             min-height: 100px;
         }
 
-        /* --- DOWNLOAD LINKS (Matches Screenshot) --- */
+        /* --- DOWNLOAD LINKS --- */
         .link-row {
-            background: #131316;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 12px;
-            display: grid;
-            grid-template-columns: 50px 1fr; /* Icon Left, Inputs Right */
-            gap: 16px;
-            position: relative;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 16px; padding: 12px; margin-bottom: 12px;
+            display: grid; grid-template-columns: 48px 1fr; gap: 12px;
+            position: relative; align-items: stretch;
         }
-
-        /* Icon Dropdown Container */
+        
+        /* Icon Box */
         .icon-box {
+            background: #2c2c2e; border-radius: 10px; border: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center;
-            background: #1c1c1f; border-radius: 8px; border: 1px solid var(--border);
-            height: 100%; min-height: 80px;
         }
         .dl-i {
-            background: transparent; border: none; color: white; 
-            font-size: 20px; cursor: pointer; text-align: center; width: 100%; height: 100%;
+            background: transparent; border: none; font-size: 20px; color: white;
+            width: 100%; height: 100%; cursor: pointer; text-align: center;
         }
 
-        /* Stacked Inputs */
+        /* Inputs */
         .link-inputs { display: flex; flex-direction: column; gap: 8px; }
         .link-inputs input {
-            padding: 10px; font-size: 13px; background: #09090b; border-color: #27272a;
+            padding: 10px 12px; font-size: 13px; background: #1c1c1e; border-color: rgba(255,255,255,0.08);
         }
-        .link-inputs input:focus { border-color: #06b6d4; } /* Cyan focus for links */
+        .link-inputs input:focus { border-color: var(--primary); }
 
-        /* Delete Button (X) */
+        /* Delete Btn */
         .del-btn {
-            position: absolute; top: 8px; right: 8px;
-            color: #ef4444; background: transparent; border: none; 
-            font-size: 16px; cursor: pointer; opacity: 0.5;
+            position: absolute; top: -8px; right: -8px;
+            width: 20px; height: 20px; background: #ff453a; color: white;
+            border: none; border-radius: 50%; font-size: 12px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
-        .del-btn:hover { opacity: 1; }
 
-        /* --- ACTION BUTTONS --- */
+        /* --- BUTTONS --- */
         .btn-add {
-            width: 100%; background: #131316; border: 1px dashed #3f3f46;
-            color: #a1a1aa; padding: 12px; border-radius: 10px; cursor: pointer;
-            font-size: 12px; font-weight: 700; transition: 0.2s;
+            width: 100%; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.2);
+            color: var(--text-muted); padding: 12px; border-radius: 12px; font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: 0.2s; margin-bottom: 24px;
         }
-        .btn-add:hover { border-color: #fff; color: #fff; }
+        .btn-add:hover { background: rgba(255,255,255,0.06); color: white; border-color: white; }
 
         .btn-gen {
-            background: var(--primary-grad);
-            color: white; width: 100%; padding: 18px; border: none; border-radius: 12px;
-            font-weight: 800; cursor: pointer; margin-top: 30px;
-            font-size: 14px; letter-spacing: 0.5px;
-            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
-            transition: 0.2s;
+            background: var(--accent-grad);
+            color: white; width: 100%; padding: 16px; border: none; border-radius: 14px;
+            font-weight: 600; font-size: 14px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(10, 132, 255, 0.3);
+            transition: transform 0.1s, filter 0.2s;
         }
-        .btn-gen:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .btn-gen:hover { filter: brightness(1.1); }
+        .btn-gen:active { transform: scale(0.98); }
 
         /* --- PREVIEW PANEL --- */
-        .preview-panel { background: transparent; border: none; box-shadow: none; justify-content: center; }
-        .phone-frame {
-            width: 100%; height: 100%; background: #000;
-            border-radius: 40px; border: 8px solid #1f1f22;
-            overflow: hidden; display: flex; flex-direction: column; position: relative;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        .preview-wrapper {
+            background: transparent; border: none; box-shadow: none; align-items: center; justify-content: center;
         }
-        .notch {
-            position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
-            width: 100px; height: 26px; background: #000; border-radius: 14px; z-index: 50;
+        .phone-mockup {
+            width: 100%; height: 100%; background: #000;
+            border-radius: 50px; border: 8px solid #2d2d2d;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            overflow: hidden; display: flex; flex-direction: column; position: relative;
+        }
+        /* Dynamic Island */
+        .island {
+            position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
+            width: 100px; height: 28px; background: #000; border-radius: 20px; z-index: 50;
         }
         #previewContainer {
-            flex-grow: 1; overflow-y: auto; padding: 25px; padding-top: 50px;
-            background: #09090b; color: #fff;
+            flex-grow: 1; overflow-y: auto; padding: 20px; padding-top: 50px;
+            background: #000; color: #fff;
         }
         #previewContainer style { display: none !important; }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 3px; }
-
-        @media (max-width: 1000px) {
-            .engine-container { display: flex; flex-direction: column; height: auto; }
-            .preview-panel { height: 700px; }
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 900px) {
+            body { padding: 10px; display: block; height: auto; }
+            .engine-container { display: flex; flex-direction: column; height: auto; gap: 20px; }
+            .glass-panel { height: auto; overflow: visible; }
+            .meta-grid { grid-template-columns: 1fr; } /* Stack top inputs on mobile */
+            .meta-full { grid-column: span 1; }
+            .preview-wrapper { height: 750px; }
+            .scroll-area { overflow: visible; }
         }
     </style>
 </head>
@@ -189,61 +204,60 @@
 
     <div class="engine-container">
         
-        <div class="panel">
+        <div class="glass-panel">
             <div class="editor-header">
                 <div class="brand">DPMods STUDIO</div>
-                <div class="version-badge">V8.0</div>
+                <div class="badge">V9.0</div>
             </div>
 
             <div class="scroll-area">
                 
-                <div class="input-group">
-                    <label>INTRO</label>
-                    <textarea id="introText" rows="2" placeholder="Description..." oninput="generate()"></textarea>
+                <div class="meta-grid">
+                    <div class="input-wrapper">
+                        <label>Thumbnail URL</label>
+                        <input type="text" id="thumbUrl" placeholder="https://..." oninput="generate()">
+                    </div>
+                    <div class="input-wrapper">
+                        <label>Main Title</label>
+                        <input type="text" id="postTitle" placeholder="Ultimate Key System" oninput="generate()">
+                    </div>
+                    <div class="input-wrapper">
+                        <label>Subtitle</label>
+                        <input type="text" id="postSubtitle" placeholder="Pro Version" oninput="generate()">
+                    </div>
+                    <div class="input-wrapper">
+                        <label>Password</label>
+                        <input type="text" id="pass" value="bydp" oninput="generate()">
+                    </div>
+                    <div class="input-wrapper meta-full">
+                        <label>Tags</label>
+                        <input type="text" id="tags" placeholder="#Tags, #DPMods" oninput="generate()">
+                    </div>
                 </div>
 
-                <div class="input-group">
-                    <label>FEATURES (ONE PER LINE)</label>
+                <div class="input-wrapper" style="margin-bottom: 24px;">
+                    <label>Intro Description</label>
+                    <textarea id="introText" rows="2" placeholder="Write a short intro..." oninput="generate()"></textarea>
+                </div>
+
+                <div class="input-wrapper" style="margin-bottom: 24px;">
+                    <label>Features (Purple Box)</label>
                     <textarea id="featuresList" rows="4" placeholder="🛡️ Feature 1...&#10;✨ Feature 2..." oninput="generate()"></textarea>
                 </div>
 
-                <label style="margin-bottom:12px;">DOWNLOAD LINKS</label>
+                <label style="margin-bottom:12px;">Download Links</label>
                 <div id="dlContainer"></div>
-                <button type="button" class="btn-add" onclick="addLink()">+ ADD LINK</button>
-
-                <div style="margin-top: 30px; padding-top:20px; border-top:1px solid var(--border);">
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                        <div class="input-group">
-                            <label>THUMBNAIL URL</label>
-                            <input type="text" id="thumbUrl" placeholder="https://..." oninput="generate()">
-                        </div>
-                        <div class="input-group">
-                            <label>MAIN TITLE</label>
-                            <input type="text" id="postTitle" placeholder="Post Title" oninput="generate()">
-                        </div>
-                        <div class="input-group">
-                            <label>SUBTITLE</label>
-                            <input type="text" id="postSubtitle" placeholder="Subtitle" oninput="generate()">
-                        </div>
-                        <div class="input-group">
-                            <label>PASSWORD</label>
-                            <input type="text" id="pass" value="bydp" oninput="generate()">
-                        </div>
-                    </div>
-                    <div class="input-group" style="margin-top:20px;">
-                        <label>TAGS</label>
-                        <input type="text" id="tags" placeholder="#Tags" oninput="generate()">
-                    </div>
-                </div>
+                <button type="button" class="btn-add" onclick="addLink()">+ Add Link</button>
 
                 <button type="button" class="btn-gen" onclick="copyCode()">GENERATE & COPY CODE</button>
                 <textarea id="finalCode" style="opacity:0; height:0; position:absolute;"></textarea>
+
             </div>
         </div>
 
-        <div class="panel preview-panel">
-            <div class="phone-frame">
-                <div class="notch"></div>
+        <div class="glass-panel preview-wrapper">
+            <div class="phone-mockup">
+                <div class="island"></div>
                 <div id="previewContainer"></div>
             </div>
         </div>
@@ -251,26 +265,23 @@
     </div>
 
 <script>
-    // --- LINK LOGIC (Matches Image Layout) ---
+    // --- LINK LOGIC ---
     function addLink(t="", s="", u="", icon="📦") {
         const d = document.createElement('div'); d.className='link-row';
         d.innerHTML = `
             <button class="del-btn" onclick="this.parentElement.remove(); generate()">×</button>
-            
             <div class="icon-box">
                 <select class="dl-i" onchange="generate()">
                     <option value="📦" ${icon==='📦'?'selected':''}>📦</option>
                     <option value="🔧" ${icon==='🔧'?'selected':''}>🔧</option>
                     <option value="📁" ${icon==='📁'?'selected':''}>📁</option>
                     <option value="🔗" ${icon==='🔗'?'selected':''}>🔗</option>
-                    <option value="🔥" ${icon==='🔥'?'selected':''}>🔥</option>
                 </select>
             </div>
-
             <div class="link-inputs">
-                <input type="text" class="dl-t" placeholder="Button Title (e.g. Key System V3)" value="${t}" oninput="generate()">
-                <input type="text" class="dl-s" placeholder="Subtitle (e.g. Java & XML)" value="${s}" oninput="generate()">
-                <input type="text" class="dl-u" placeholder="Download URL" value="${u}" oninput="generate()">
+                <input type="text" class="dl-t" placeholder="Title" value="${t}" oninput="generate()">
+                <input type="text" class="dl-s" placeholder="Subtitle" value="${s}" oninput="generate()">
+                <input type="text" class="dl-u" placeholder="URL" value="${u}" oninput="generate()">
             </div>
         `;
         document.getElementById('dlContainer').appendChild(d);
@@ -279,14 +290,13 @@
 
     // --- INIT ---
     window.onload = function() {
-        // Sample data to match screenshot
         addLink("Key System V3", "Java & XML", "", "📦");
         addLink("MT Manager", "Latest Version", "https://t.me/dp_mods", "📁");
         
-        // Default Thumbnail
+        // Defaults
         document.getElementById('thumbUrl').value = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi5a9Aem6F06FvnHWM98smFD_OHKux4voThwVZlmNTRbdtb_vstvOmlAX1XI5UaY38NLVvxv1glJoIkY3zVJvzCMgGdGlyZrMNE1r2adlrxhAFOFi5Pwoj7SSa-3CySHU2sqzDPysAjNdJts_6G3b_GQHzIkvG9o1eEmzhudSF6ge8ey23Of5Ej8dksupNo/s1280/Dark%20Blue%20and%20Yellow%20Bold%20Modern%20Professional%20Attractive%20YouTube%20Thumbnail.png";
         document.getElementById('postTitle').value = "Ultimate Key System";
-        document.getElementById('introText').value = "Welcome to the future of Android Security! This exclusive release brings you the Ultimate Key System V3.";
+        document.getElementById('introText').value = "Welcome to the future of Android Security!";
         document.getElementById('featuresList').value = "🛡️ **Anti-Tamper** – Protects code integrity.\n⏳ **Server Time** – No date bypass.";
         generate();
     }
@@ -323,30 +333,30 @@
 
         const output = `
 <style>
-/* DPMods V8 Output */
-.rainbow-heading { background: linear-gradient(to right, #a855f7, #06b6d4, #f43f5e, #a855f7); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rainbow-scroll 6s linear infinite; }
+/* DPMods V9 Glass Output */
+.rainbow-heading { background: linear-gradient(to right, #5e5ce6, #0a84ff, #30d158, #5e5ce6); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rainbow-scroll 6s linear infinite; }
 @keyframes rainbow-scroll { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
-.dpmods-post-container { background: none; line-height: 1.7; font-family: 'Manrope', sans-serif; color: #e4e4e7; }
-.dpmods-post-container h4 { border-bottom: 2px solid #8b5cf6; padding-bottom: 8px; margin-top: 30px; font-weight: bold; font-size: 1.2em; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
-.dpmods-post-container ul { list-style: none; background: #18181b; border-radius: 12px; padding: 24px; border: 1px solid #27272a; }
-.dpmods-post-container ul li { margin-bottom: 12px; padding-left: 1.5em; position: relative; color: #d4d4d8; }
-.dpmods-post-container ul li::before { content: "✨"; position: absolute; left: 0; color:#06b6d4; }
-.dpmods-post-container a { color: #06b6d4; text-decoration: none; font-weight: bold; }
+.dpmods-post-container { background: none; line-height: 1.7; font-family: 'Inter', sans-serif; color: #e5e5e7; }
+.dpmods-post-container h4 { border-bottom: 2px solid #5e5ce6; padding-bottom: 8px; margin-top: 30px; font-weight: bold; font-size: 1.2em; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
+.dpmods-post-container ul { list-style: none; background: #1c1c1e; border-radius: 16px; padding: 24px; border: 1px solid #3a3a3c; }
+.dpmods-post-container ul li { margin-bottom: 12px; padding-left: 1.5em; position: relative; color: #aeaeb2; }
+.dpmods-post-container ul li::before { content: "✨"; position: absolute; left: 0; color:#0a84ff; }
+.dpmods-post-container a { color: #0a84ff; text-decoration: none; font-weight: bold; }
 .dp-download-grid { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
-.dp-glass-btn { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.05)); border: 1px solid #27272a; border-left: 4px solid #8b5cf6; padding: 16px 20px; border-radius: 12px; text-decoration: none !important; transition: 0.3s; }
-.dp-glass-btn:hover { transform: translateX(5px); border-left-color: #06b6d4; background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.1)); }
+.dp-glass-btn { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(94, 92, 230, 0.1), rgba(10, 132, 255, 0.05)); border: 1px solid #3a3a3c; border-left: 4px solid #5e5ce6; padding: 16px 20px; border-radius: 16px; text-decoration: none !important; transition: 0.3s; }
+.dp-glass-btn:hover { transform: translateX(5px); border-left-color: #0a84ff; background: linear-gradient(135deg, rgba(94, 92, 230, 0.2), rgba(10, 132, 255, 0.1)); }
 .dp-btn-title { display:block; font-weight: bold; font-size: 16px; color: #fff !important; }
-.dp-btn-sub { font-size: 12px; color: #a1a1aa !important; opacity: 0.8; }
+.dp-btn-sub { font-size: 12px; color: #8e8e93 !important; opacity: 0.8; }
 .dp-btn-icon { font-size: 24px; margin-right: 15px; }
 .dp-arrow { color: #fff; opacity: 0.7; font-size: 20px; }
-.dp-password-container { background: linear-gradient(145deg, #18181b, #09090b); border-radius: 12px; padding: 20px; margin-top: 30px; border: 1px solid #27272a; }
-.dp-unlock-btn { background: linear-gradient(90deg, #8b5cf6, #7c3aed); color: white; padding: 12px 28px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-.dp-password-text { display: none; margin-top:15px; font-size: 18px; color: #06b6d4; font-weight: bold; text-align: center; border: 2px dashed #06b6d4; padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.3); }
+.dp-password-container { background: #1c1c1e; border-radius: 16px; padding: 20px; margin-top: 30px; border: 1px solid #3a3a3c; }
+.dp-unlock-btn { background: linear-gradient(90deg, #5e5ce6, #0a84ff); color: white; padding: 12px 28px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.dp-password-text { display: none; margin-top:15px; font-size: 18px; color: #0a84ff; font-weight: bold; text-align: center; border: 2px dashed #0a84ff; padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.3); }
 </style>
 
 <div class="dpmods-post-container">
     <div class="separator" style="clear: both; text-align: center;">
-        <img border="0" src="${th}" width="640" style="border-radius: 12px; max-width:100%; height:auto; box-shadow: 0 10px 40px rgba(0,0,0,0.5);" />
+        <img border="0" src="${th}" width="640" style="border-radius: 16px; max-width:100%; height:auto; box-shadow: 0 10px 40px rgba(0,0,0,0.5);" />
     </div><br />
     
     <div class="separator" style="clear: both; text-align: center;">
@@ -363,7 +373,7 @@
 
     <div class="dp-password-container">
         <div id="dp-lock-wrapper">
-            <h4 style="margin-top:0; border:none; color:#e4e4e7; font-size:14px;">🔐 File Password Protection:</h4>
+            <h4 style="margin-top:0; border:none; color:#e5e5e7; font-size:14px;">🔐 File Password Protection:</h4>
             <button class="dp-unlock-btn" onclick="window.revealPassword()">Unlock Password ⏳</button>
         </div>
         <div class="dp-password-text" id="dp-password-result"></div>
@@ -377,7 +387,7 @@
     </p>
     
     <h4>🔖 <strong>Tags</strong></h4>
-    <p style="font-size:12px; color:#71717a;">${tg}</p>
+    <p style="font-size:12px; color:#8e8e93;">${tg}</p>
 </div>
 
 <script>
@@ -389,7 +399,7 @@ window.revealPassword = function() {
     btn.innerHTML = "Processing... 🔄"; btn.style.opacity = "0.7"; btn.disabled = true;
     setTimeout(function() {
         wrapper.style.display = 'none'; result.style.display = 'block';
-        result.innerHTML = "🔑 Password: <span style='color: #06b6d4; font-size: 22px; margin-left: 10px;'>${pa}</span>";
+        result.innerHTML = "🔑 Password: <span style='color: #0a84ff; font-size: 22px; margin-left: 10px;'>${pa}</span>";
     }, 5000);
 };
 document.addEventListener("DOMContentLoaded", function() {});
