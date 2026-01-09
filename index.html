@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DPMods Engine | Dark Anime</title>
+    <title>DPMods Engine | Dark Anime V5.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
     <style>
         /* --- DARK ANIME THEME --- */
         :root {
             --bg-dark: #09090b;
-            --glass-panel: rgba(20, 20, 25, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-panel: rgba(20, 20, 25, 0.85); /* Slightly darker for contrast */
+            --glass-border: rgba(255, 255, 255, 0.1);
             --primary: #c084fc; /* Neon Purple */
             --secondary: #2dd4bf; /* Teal/Cyan */
             --accent: #f472b6; /* Sakura Pink */
@@ -30,26 +30,14 @@
             overflow-x: hidden;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Better for mobile scrolling */
+            align-items: flex-start;
             padding: 20px;
             box-sizing: border-box;
         }
 
-        /* --- PARTICLES (Spirit Orbs) --- */
-        #particles {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        .particle {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            opacity: 0;
-            animation: floatUp 10s infinite linear;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-        }
+        /* --- PARTICLES --- */
+        #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .particle { position: absolute; background: white; border-radius: 50%; opacity: 0; animation: floatUp 10s infinite linear; box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
         @keyframes floatUp {
             0% { transform: translateY(100vh) scale(0); opacity: 0; }
             20% { opacity: 0.8; }
@@ -57,10 +45,10 @@
             100% { transform: translateY(-10vh) scale(1); opacity: 0; }
         }
 
-        /* --- MAIN LAYOUT --- */
+        /* --- LAYOUT --- */
         .engine-container {
             display: grid;
-            grid-template-columns: 1fr 400px; /* Editor | Phone */
+            grid-template-columns: 1fr 400px;
             gap: 25px;
             width: 100%;
             max-width: 1400px;
@@ -68,7 +56,7 @@
             height: 92vh;
         }
 
-        /* --- GLASS PANELS --- */
+        /* --- PANELS --- */
         .panel {
             background: var(--glass-panel);
             backdrop-filter: blur(20px);
@@ -81,15 +69,12 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
             position: relative;
         }
-
-        /* Glow Header Line */
         .panel::before {
-            content: '';
-            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
             background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
         }
 
-        /* --- EDITOR SECTION --- */
+        /* --- EDITOR HEADER --- */
         .editor-header {
             padding: 20px 30px;
             border-bottom: 1px solid var(--glass-border);
@@ -99,46 +84,22 @@
             background: rgba(0,0,0,0.2);
         }
         .brand {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            background: linear-gradient(to right, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .brand span {
-            font-size: 10px;
-            background: var(--primary);
-            color: black;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
+            font-size: 20px; font-weight: 700; letter-spacing: 1px;
+            background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; background-clip: text; color: transparent;
         }
 
-        .scroll-area {
-            padding: 30px;
-            overflow-y: auto;
-            flex-grow: 1;
-        }
+        .scroll-area { padding: 30px; overflow-y: auto; flex-grow: 1; }
 
-        /* Dark Inputs */
+        /* --- INPUT STYLING --- */
         .input-group { margin-bottom: 20px; }
-        
         label {
-            font-size: 11px;
-            color: var(--secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            display: block;
-            font-weight: 700;
+            font-size: 11px; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 8px; display: block; font-weight: 700;
         }
 
         input, textarea, select {
             width: 100%;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid var(--glass-border);
             color: white;
             padding: 14px;
@@ -148,127 +109,98 @@
             box-sizing: border-box;
             transition: 0.3s;
         }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: rgba(192, 132, 252, 0.05);
+        input:focus, textarea:focus, select:focus {
+            outline: none; border-color: var(--primary); background: rgba(192, 132, 252, 0.05);
             box-shadow: 0 0 15px rgba(192, 132, 252, 0.1);
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        /* --- LINK ROW STYLING (FIXED) --- */
+        .link-row {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            display: grid;
+            grid-template-columns: 60px 1fr; /* Icon | Inputs */
+            gap: 15px;
+            align-items: start;
+            transition: 0.3s;
+        }
+        .link-row:hover { background: rgba(255, 255, 255, 0.05); border-color: var(--secondary); }
+
+        /* The Icon Select Box */
+        .icon-select-wrapper {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .dl-i {
+            font-size: 24px; padding: 5px; height: 50px; text-align: center;
+            background: rgba(0,0,0,0.3); border-color: var(--glass-border); cursor: pointer;
+        }
+
+        /* The Input Fields Area */
+        .link-inputs {
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .link-inputs input {
+            background: rgba(0, 0, 0, 0.5); /* Darker bg for better visibility */
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 10px 12px;
+            font-size: 13px;
+        }
+        .link-inputs input::placeholder { color: #666; }
+        
+        .dl-t { font-weight: bold; color: var(--primary); }
+        .dl-s { font-size: 12px; color: var(--text-muted); }
+
+        /* Remove Button */
+        .del-btn {
+            position: absolute; top: -10px; right: -10px;
+            background: #ef4444; color: white; border: none;
+            width: 24px; height: 24px; border-radius: 50%;
+            cursor: pointer; font-weight: bold; line-height: 24px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
 
         /* --- BUTTONS --- */
         .btn-gen {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            background: linear-gradient(135deg, var(--primary), var(--accent)); color: white;
+            width: 100%; padding: 16px; border: none; border-radius: 14px;
+            font-weight: 700; cursor: pointer; margin-top: 10px;
             box-shadow: 0 5px 20px rgba(192, 132, 252, 0.3);
         }
-        .btn-gen:active { transform: scale(0.98); }
-
         .btn-add {
-            width: 100%;
-            background: transparent;
-            border: 1px dashed var(--text-muted);
-            color: var(--text-muted);
-            padding: 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.3s;
+            width: 100%; background: transparent; border: 1px dashed var(--text-muted);
+            color: var(--text-muted); padding: 12px; border-radius: 12px; cursor: pointer;
+            transition: 0.3s; margin-top: 5px;
         }
-        .btn-add:hover {
-            border-color: var(--secondary);
-            color: var(--secondary);
-            background: rgba(45, 212, 191, 0.05);
-        }
+        .btn-add:hover { border-color: var(--secondary); color: var(--secondary); background: rgba(45, 212, 191, 0.05); }
 
-        /* --- LINK ITEMS --- */
-        .link-row {
-            display: flex; gap: 8px;
-            background: rgba(255,255,255,0.03);
-            padding: 10px; border-radius: 12px;
-            margin-bottom: 10px;
-            border-left: 3px solid var(--secondary);
-        }
-        .del-btn {
-            background: #ef4444; color: white; border: none;
-            width: 30px; border-radius: 8px; cursor: pointer;
-        }
-
-        /* --- PHONE PREVIEW WRAPPER --- */
-        .preview-panel {
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            align-items: center;
-            justify-content: center;
-        }
-
+        /* --- PREVIEW --- */
+        .preview-panel { background: transparent; border: none; box-shadow: none; justify-content: center; }
         .phone-mockup {
-            width: 100%;
-            height: 100%;
-            background: #000;
-            border-radius: 40px;
-            border: 8px solid #2d2d2d;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
+            width: 100%; height: 100%; background: #000; border-radius: 40px;
+            border: 8px solid #2d2d2d; overflow: hidden; position: relative; display: flex; flex-direction: column;
         }
-
-        /* Dynamic Island */
         .notch {
             position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-            width: 100px; height: 25px; background: #000;
-            border-radius: 20px; z-index: 20;
+            width: 100px; height: 25px; background: #000; border-radius: 20px; z-index: 20;
         }
-
         #previewContainer {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 20px;
-            padding-top: 45px;
-            background: #0f0f11; /* Dark BG for preview content */
-            color: white;
+            flex-grow: 1; overflow-y: auto; padding: 20px; padding-top: 45px;
+            background: #0f0f11; color: white;
         }
-        /* Hide CSS in preview */
         #previewContainer style { display: none !important; }
 
-        /* --- MOBILE OPTIMIZATION --- */
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+        /* --- MOBILE --- */
         @media (max-width: 900px) {
-            body { height: auto; display: block; padding: 10px; }
-            .engine-container {
-                display: flex;
-                flex-direction: column;
-                height: auto;
-                gap: 30px;
-            }
-            .panel { height: auto; max-height: none; }
-            
-            /* Make Phone Preview Fit Mobile Screen */
-            .preview-panel {
-                height: 700px; /* Fixed height for phone area on mobile */
-                width: 100%;
-                overflow: hidden;
-            }
-            .phone-mockup {
-                transform: scale(0.9); /* Scale down slightly to fit edges */
-                border-width: 4px; /* Thinner bezel on mobile */
-            }
+            .engine-container { display: flex; flex-direction: column; height: auto; }
+            .preview-panel { height: 700px; width: 100%; }
         }
     </style>
 </head>
@@ -280,8 +212,8 @@
         
         <div class="panel">
             <div class="editor-header">
-                <div class="brand">DPMods ENGINE <span>V5</span></div>
-                <div style="font-size:12px; color:var(--secondary);">DARK MODE</div>
+                <div class="brand">DPMods ENGINE</div>
+                <div style="font-size:12px; color:var(--secondary);">V5.1</div>
             </div>
 
             <div class="scroll-area">
@@ -311,9 +243,9 @@
                     <textarea id="featuresList" rows="4" placeholder="🛡️ Feature 1...&#10;✨ Feature 2..." oninput="generate()"></textarea>
                 </div>
 
-                <label>Download Links</label>
+                <label style="margin-bottom:10px;">Download Buttons</label>
                 <div id="dlContainer"></div>
-                <button type="button" class="btn-add" onclick="addLink()">+ Add Link</button>
+                <button type="button" class="btn-add" onclick="addLink()">+ Add Download Button</button>
 
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:20px;">
                     <div class="input-group">
@@ -334,29 +266,22 @@
         <div class="panel preview-panel">
             <div class="phone-mockup">
                 <div class="notch"></div>
-                <div id="previewContainer">
-                    <div style="text-align:center; padding-top:60%; opacity:0.3;">PREVIEW LOADING...</div>
-                </div>
+                <div id="previewContainer"></div>
             </div>
         </div>
 
     </div>
 
 <script>
-    // --- 1. PARTICLE SYSTEM ---
+    // --- PARTICLE SYSTEM ---
     function createParticles() {
         const container = document.getElementById('particles');
-        const particleCount = 40;
-        const colors = ['#c084fc', '#2dd4bf', '#f472b6', '#ffffff'];
-
-        for (let i = 0; i < particleCount; i++) {
+        for (let i = 0; i < 30; i++) {
             const p = document.createElement('div');
             p.className = 'particle';
             const size = Math.random() * 4 + 1;
-            p.style.width = size + 'px';
-            p.style.height = size + 'px';
+            p.style.width = size + 'px'; p.style.height = size + 'px';
             p.style.left = Math.random() * 100 + 'vw';
-            p.style.background = colors[Math.floor(Math.random() * colors.length)];
             p.style.animationDuration = (Math.random() * 10 + 5) + 's';
             p.style.animationDelay = (Math.random() * 5) + 's';
             container.appendChild(p);
@@ -364,32 +289,48 @@
     }
     createParticles();
 
-    // --- 2. LOGIC ---
+    // --- ADD LINK FUNCTION (UPDATED) ---
     function addLink(title = "", sub = "", url = "", icon = "📦") {
         const div = document.createElement('div');
         div.className = 'link-row';
         div.innerHTML = `
             <button class="del-btn" onclick="this.parentElement.remove(); generate()">×</button>
-            <input type="text" class="dl-t" placeholder="Title" value="${title}" oninput="generate()" style="flex:2">
-            <input type="text" class="dl-s" placeholder="Sub" value="${sub}" oninput="generate()" style="flex:1">
-            <select class="dl-i" onchange="generate()">
-                <option value="📦" ${icon==='📦'?'selected':''}>📦</option>
-                <option value="🔧" ${icon==='🔧'?'selected':''}>🔧</option>
-                <option value="📁" ${icon==='📁'?'selected':''}>📁</option>
-            </select>
-            <input type="text" class="dl-u" value="${url}" style="display:none">
+            
+            <div class="icon-select-wrapper">
+                <select class="dl-i" onchange="generate()">
+                    <option value="📦" ${icon==='📦'?'selected':''}>📦</option>
+                    <option value="🔧" ${icon==='🔧'?'selected':''}>🔧</option>
+                    <option value="📁" ${icon==='📁'?'selected':''}>📁</option>
+                    <option value="🔗" ${icon==='🔗'?'selected':''}>🔗</option>
+                    <option value="🔥" ${icon==='🔥'?'selected':''}>🔥</option>
+                    <option value="🚀" ${icon==='🚀'?'selected':''}>🚀</option>
+                    <option value="💎" ${icon==='💎'?'selected':''}>💎</option>
+                    <option value="📥" ${icon==='📥'?'selected':''}>📥</option>
+                    <option value="🛒" ${icon==='🛒'?'selected':''}>🛒</option>
+                    <option value="🌐" ${icon==='🌐'?'selected':''}>🌐</option>
+                </select>
+                <label style="font-size:9px; margin-top:5px; color:#aaa;">ICON</label>
+            </div>
+
+            <div class="link-inputs">
+                <input type="text" class="dl-t" placeholder="Button Title (e.g. Download V5)" value="${title}" oninput="generate()">
+                <input type="text" class="dl-s" placeholder="Subtitle (e.g. Java & XML)" value="${sub}" oninput="generate()">
+                <input type="text" class="dl-u" placeholder="Download Link URL" value="${url}" oninput="generate()">
+            </div>
         `;
         document.getElementById('dlContainer').appendChild(div);
         generate();
     }
 
+    // --- INITIAL DATA ---
     window.onload = function() {
         addLink("Key System V3", "Java & XML", "", "📦");
-        addLink("MT Manager", "Latest", "https://t.me/dp_mods", "📁");
+        addLink("MT Manager", "Latest Version", "https://t.me/dp_mods", "📁");
         document.getElementById('thumbUrl').value = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi5a9Aem6F06FvnHWM98smFD_OHKux4voThwVZlmNTRbdtb_vstvOmlAX1XI5UaY38NLVvxv1glJoIkY3zVJvzCMgGdGlyZrMNE1r2adlrxhAFOFi5Pwoj7SSa-3CySHU2sqzDPysAjNdJts_6G3b_GQHzIkvG9o1eEmzhudSF6ge8ey23Of5Ej8dksupNo/s1280/Dark%20Blue%20and%20Yellow%20Bold%20Modern%20Professional%20Attractive%20YouTube%20Thumbnail.png";
         generate();
     }
 
+    // --- GENERATE FUNCTION ---
     function generate() {
         const thumb = document.getElementById('thumbUrl').value;
         const title = document.getElementById('postTitle').value;
@@ -422,7 +363,7 @@
         // DARK OUTPUT TEMPLATE
         const template = `
 <style>
-/* DPMods Dark Anime Output */
+/* DPMods Dark Output */
 .rainbow-heading { background: linear-gradient(to right, #c084fc, #2dd4bf, #f472b6, #c084fc); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rainbow-scroll 6s linear infinite; }
 @keyframes rainbow-scroll { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
 .dpmods-post-container { background: none; line-height: 1.7; font-family: 'Outfit', sans-serif; color: #e2e8f0; }
