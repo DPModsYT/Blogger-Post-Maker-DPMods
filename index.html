@@ -3,392 +3,365 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DPMods Engine | Ultimate Console</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>DPMods Studio | Anime Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* --- CORE VARIABLES --- */
+        /* --- ANIME MINIMAL THEME VARIABLES --- */
         :root {
-            --bg-deep: #050505;
-            --glass-surface: rgba(20, 20, 25, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.03);
-            --neon-primary: #00f3ff; /* Cyber Blue */
-            --neon-secondary: #bc13fe; /* Electric Purple */
-            --text-main: #e0e0e0;
-            --text-muted: #6b7280;
-            --font-ui: 'Inter', sans-serif;
-            --font-code: 'JetBrains Mono', monospace;
+            --bg-color: #f0f2f5;
+            --glass-white: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --primary: #ff7eb3; /* Sakura Pink */
+            --secondary: #7afcff; /* Tech Blue */
+            --accent: #6c5ce7; /* Deep Purple */
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --shadow-soft: 0 10px 40px rgba(0,0,0,0.08);
+            --font-ui: 'Poppins', sans-serif;
+            --font-header: 'Quicksand', sans-serif;
         }
 
-        /* --- GLOBAL RESET & BG --- */
         body {
             margin: 0;
-            background-color: var(--bg-deep);
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.08), transparent 25%), 
-                radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.08), transparent 25%);
-            color: var(--text-main);
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
             font-family: var(--font-ui);
+            color: var(--text-dark);
             height: 100vh;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
-        /* Scanline Overlay */
-        body::after {
-            content: "";
+        /* --- BACKGROUND ANIMATION (Floating Orbs) --- */
+        .bg-orb {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 3px;
-            pointer-events: none;
-            z-index: 999;
-            opacity: 0.3;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+            opacity: 0.6;
+            animation: float 10s infinite ease-in-out;
+        }
+        .orb-1 { width: 400px; height: 400px; background: var(--primary); top: -100px; left: -100px; animation-delay: 0s; }
+        .orb-2 { width: 300px; height: 300px; background: var(--secondary); bottom: -50px; right: -50px; animation-delay: -5s; }
+        .orb-3 { width: 200px; height: 200px; background: #a29bfe; top: 40%; left: 40%; animation-delay: -2s; opacity: 0.4; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -50px); }
         }
 
-        /* --- LAYOUT GRID --- */
-        .engine-container {
+        /* --- MAIN LAYOUT --- */
+        .engine-wrapper {
             display: grid;
-            grid-template-columns: 80px 1fr 400px; /* Sidebar | Editor | Preview */
+            grid-template-columns: 80px 1fr 380px; /* Sidebar | Editor | Phone */
+            gap: 24px;
             width: 95vw;
             height: 90vh;
-            gap: 20px;
-            position: relative;
             z-index: 10;
+            position: relative;
         }
 
-        /* --- GLASS PANELS (The "Hard Glass" Look) --- */
-        .panel {
-            background: var(--glass-surface);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+        /* --- GLASS CARDS --- */
+        .card {
+            background: var(--glass-white);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             border: 1px solid var(--glass-border);
-            border-top: 1px solid rgba(255,255,255,0.15); /* Top highlight */
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        /* Glowing corner accents */
-        .panel::before {
-            content: '';
-            position: absolute; top: -1px; left: -1px;
-            width: 40px; height: 40px;
-            border-top: 2px solid var(--neon-primary);
-            border-left: 2px solid var(--neon-primary);
-            border-radius: 16px 0 0 0;
-            opacity: 0.6;
-            pointer-events: none;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         /* --- SIDEBAR --- */
         .sidebar {
             align-items: center;
             padding: 20px 0;
-            gap: 20px;
+            background: rgba(255,255,255,0.8);
         }
-        .brand-logo {
-            font-family: var(--font-code);
-            font-weight: 800;
-            color: var(--neon-primary);
-            font-size: 24px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        .logo {
+            font-family: var(--font-header);
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--accent);
+            margin-bottom: 30px;
+            letter-spacing: -1px;
         }
-        .nav-icon {
-            width: 40px; height: 40px;
-            border-radius: 10px;
+        .nav-item {
+            width: 48px; height: 48px;
+            border-radius: 16px;
             display: flex; align-items: center; justify-content: center;
-            color: var(--text-muted);
-            font-size: 18px;
+            font-size: 20px;
+            color: var(--text-light);
             cursor: pointer;
             transition: 0.3s;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid transparent;
+            margin-bottom: 12px;
         }
-        .nav-icon.active, .nav-icon:hover {
-            color: var(--neon-primary);
-            background: rgba(0, 243, 255, 0.1);
-            border-color: rgba(0, 243, 255, 0.3);
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        .nav-item.active, .nav-item:hover {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 15px rgba(255, 126, 179, 0.3);
+            transform: scale(1.1);
         }
 
-        /* --- EDITOR AREA --- */
+        /* --- EDITOR SECTION --- */
         .editor-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--glass-border);
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .editor-title {
-            font-family: var(--font-code);
+        .header-title {
+            font-family: var(--font-header);
             font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--text-main);
+            font-size: 18px;
+            color: var(--text-dark);
             display: flex; align-items: center; gap: 10px;
         }
-        .status-indicator {
-            width: 8px; height: 8px;
-            background: #0f0;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #0f0;
-            animation: pulse 2s infinite;
+        .badge {
+            background: var(--accent);
+            color: white;
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-weight: 600;
         }
 
-        .editor-content {
-            padding: 20px;
+        .editor-scroll {
+            padding: 30px;
             overflow-y: auto;
             flex-grow: 1;
         }
 
-        /* Complex Inputs */
-        .input-group { margin-bottom: 20px; position: relative; }
+        /* Minimal Inputs */
+        .input-box { margin-bottom: 20px; }
         
         label {
-            font-family: var(--font-code);
-            font-size: 11px;
-            color: var(--neon-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
             margin-bottom: 8px;
             display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         input, textarea, select {
             width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--glass-border);
-            color: #fff;
-            padding: 14px;
-            border-radius: 6px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            border: 2px solid transparent;
+            background: white;
+            color: var(--text-dark);
             font-family: var(--font-ui);
             font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
             transition: 0.3s;
             box-sizing: border-box;
         }
 
         input:focus, textarea:focus {
             outline: none;
-            border-color: var(--neon-primary);
-            background: rgba(0, 243, 255, 0.05);
-            box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.05);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 126, 179, 0.15);
+            transform: translateY(-2px);
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--neon-secondary); }
-
-        /* --- PREVIEW AREA --- */
-        .preview-panel {
-            padding: 0;
-            background: #000;
-        }
-        .preview-header {
-            padding: 15px;
-            background: rgba(20,20,20,0.8);
-            border-bottom: 1px solid #333;
-            text-align: center;
-            font-family: var(--font-code);
-            font-size: 12px;
-            color: #666;
-        }
-        #previewContainer {
-            height: 100%;
-            overflow-y: auto;
-            padding: 15px;
-            background: #0d0d0d;
-        }
-        /* HIDE STYLE TAGS IN PREVIEW */
-        #previewContainer style { display: none !important; }
-
-        /* --- BUTTONS --- */
-        .btn-action {
+        /* --- BUTTONS (Anime Style) --- */
+        .btn-gen {
             width: 100%;
-            background: linear-gradient(90deg, var(--neon-secondary), #9000ff);
+            background: linear-gradient(90deg, var(--primary), var(--accent));
             color: white;
             border: none;
             padding: 16px;
-            font-family: var(--font-code);
-            font-weight: bold;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            border-radius: 18px;
+            font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             overflow: hidden;
-            transition: 0.3s;
+            letter-spacing: 0.5px;
             margin-top: 10px;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
         }
+        .btn-gen:hover { transform: scale(1.02); }
+        .btn-gen:active { transform: scale(0.95); }
         
-        .btn-action:hover {
-            filter: brightness(1.2);
-            box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+        /* Shimmer Effect */
+        .btn-gen::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-20deg);
+            animation: shine 3s infinite;
         }
-        .btn-action::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }
-        .btn-action:hover::after { left: 100%; }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
 
         .btn-add {
-            background: transparent;
-            border: 1px dashed var(--glass-border);
-            color: var(--text-muted);
-            padding: 10px;
+            background: white;
+            border: 2px dashed #dcdde1;
+            color: var(--text-light);
             width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            font-weight: 600;
             cursor: pointer;
-            font-family: var(--font-code);
-            font-size: 12px;
             transition: 0.3s;
         }
-        .btn-add:hover {
-            border-color: var(--neon-primary);
-            color: var(--neon-primary);
-            background: rgba(0,243,255,0.05);
-        }
+        .btn-add:hover { border-color: var(--secondary); color: var(--accent); background: #f0fdff; }
 
-        /* --- LINK ITEMS --- */
-        .link-item {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            background: rgba(255,255,255,0.02);
-            padding: 15px;
-            border-left: 2px solid var(--neon-primary);
-            margin-bottom: 10px;
+        /* --- LINKS --- */
+        .link-row {
+            display: flex; gap: 10px; background: white; padding: 10px;
+            border-radius: 16px; margin-bottom: 10px; align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
             position: relative;
         }
-        .remove-btn {
-            position: absolute; right: 5px; top: 5px;
-            background: none; border: none; color: #ff3333;
-            cursor: pointer; font-weight: bold;
+        .del-btn {
+            width: 30px; height: 30px; background: #ff7675; color: white; border: none;
+            border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
 
-        /* --- ANIMATIONS --- */
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- PREVIEW (Anime Phone) --- */
+        .preview-area {
+            background: transparent;
+            box-shadow: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        .panel { animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-        .sidebar { animation-delay: 0s; }
-        .editor-panel { animation-delay: 0.1s; }
-        .preview-panel { animation-delay: 0.2s; }
+        .phone-mockup {
+            width: 100%;
+            height: 100%;
+            background: #1e1e1e; /* Dark mode screen inside */
+            border-radius: 40px;
+            border: 12px solid #fff; /* White Phone Body */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Dynamic Island / Notch */
+        .phone-notch {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 120px; height: 25px; background: #000;
+            border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;
+            z-index: 20;
+        }
 
-        /* --- RESPONSIVE MOBILE --- */
-        @media (max-width: 1024px) {
-            body { height: auto; overflow-y: auto; display: block; padding: 20px 0; }
-            .engine-container {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                height: auto;
-                padding: 10px;
-                box-sizing: border-box;
-            }
-            .sidebar { 
-                flex-direction: row; 
-                justify-content: space-between; 
-                padding: 10px 20px;
-                height: auto;
-            }
-            .nav-icon { width: auto; height: auto; padding: 10px; font-size: 14px; gap: 5px; }
-            .preview-panel { height: 600px; }
+        #previewContainer {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-top: 40px;
+            color: white;
+        }
+        /* HIDE CSS CODE IN PREVIEW */
+        #previewContainer style { display: none !important; }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #dfe6e9; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* --- MOBILE --- */
+        @media (max-width: 1000px) {
+            body { height: auto; overflow-y: auto; display: block; padding: 20px; }
+            .engine-wrapper { display: flex; flex-direction: column; width: 100%; height: auto; }
+            .sidebar { flex-direction: row; justify-content: center; gap: 20px; padding: 10px; }
+            .phone-mockup { height: 600px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="engine-container">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <div class="engine-wrapper">
         
-        <div class="panel sidebar">
-            <div class="brand-logo">DP</div>
-            
-            <div class="nav-icon active" title="Editor">⚡</div>
-            <div class="nav-icon" title="Settings">⚙️</div>
-            <div class="nav-icon" title="Assets">📁</div>
-            <div style="flex-grow:1"></div>
-            <div class="nav-icon" title="Logout">🚫</div>
+        <div class="card sidebar">
+            <div class="logo">DP</div>
+            <div class="nav-item active" title="Create">✨</div>
+            <div class="nav-item" title="Assets">📦</div>
+            <div class="nav-item" title="Settings">⚙️</div>
         </div>
 
-        <div class="panel editor-panel">
+        <div class="card">
             <div class="editor-header">
-                <div class="editor-title">
-                    <div class="status-indicator"></div>
-                    DPMods Engine v4.0
-                </div>
-                <div style="font-family: var(--font-code); font-size: 10px; opacity: 0.5;">READY</div>
+                <div class="header-title">DPMods Studio <span class="badge">Anime OS</span></div>
             </div>
 
-            <div class="editor-content">
+            <div class="editor-scroll">
                 
-                <div class="input-group">
-                    <label>Thumbnail URL</label>
-                    <input type="text" id="thumbUrl" placeholder="https://image-link.com/..." oninput="generatePost()">
+                <div class="input-box">
+                    <label>Thumbnail Image URL</label>
+                    <input type="text" id="thumbUrl" placeholder="https://..." oninput="generate()">
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div class="input-group">
-                        <label>Title</label>
-                        <input type="text" id="postTitle" placeholder="Ultimate Key System" oninput="generatePost()">
+                    <div class="input-box">
+                        <label>Main Title</label>
+                        <input type="text" id="postTitle" placeholder="Ultimate Key System" oninput="generate()">
                     </div>
-                    <div class="input-group">
-                        <label>Subtitle / Hook</label>
-                        <input type="text" id="postSubtitle" placeholder="Unhackable Security" oninput="generatePost()">
+                    <div class="input-box">
+                        <label>Subtitle</label>
+                        <input type="text" id="postSubtitle" placeholder="Anti-Tamper Security" oninput="generate()">
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label>Intro Text</label>
-                    <textarea id="introText" rows="2" placeholder="Welcome to the future..." oninput="generatePost()"></textarea>
+                <div class="input-box">
+                    <label>Introduction</label>
+                    <textarea id="introText" rows="2" placeholder="Welcome to the future..." oninput="generate()"></textarea>
                 </div>
 
-                <div class="input-group">
-                    <label>Features List (Format: **Bold** text)</label>
-                    <textarea id="featuresList" rows="4" placeholder="🛡️ Anti-Tamper Security...&#10;⏳ Unhackable Server Time..." oninput="generatePost()"></textarea>
+                <div class="input-box">
+                    <label>Features (Add emojis)</label>
+                    <textarea id="featuresList" rows="4" placeholder="🛡️ Anti-Tamper Security...&#10;⏳ Unhackable Server Time..." oninput="generate()"></textarea>
                 </div>
 
-                <label>Download Links Database</label>
-                <div id="downloadsContainer"></div>
-                <button type="button" class="btn-add" onclick="addLinkInput()">+ ADD DOWNLOAD LINK</button>
+                <label>Download Buttons</label>
+                <div id="dlContainer"></div>
+                <button type="button" class="btn-add" onclick="addLink()">+ Add Button</button>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-                    <div class="input-group">
+                    <div class="input-box">
                         <label>🔐 Zip Password</label>
-                        <input type="text" id="filePassword" value="bydp" oninput="generatePost()">
+                        <input type="text" id="pass" value="bydp" oninput="generate()">
                     </div>
-                    <div class="input-group">
+                    <div class="input-box">
                         <label>SEO Tags</label>
-                        <input type="text" id="seoTags" placeholder="#DPMods, #KeySystem..." oninput="generatePost()">
+                        <input type="text" id="tags" placeholder="#DPMods..." oninput="generate()">
                     </div>
                 </div>
 
-                <button type="button" class="btn-action" onclick="copyCode()">
-                    &lt;/&gt; GENERATE & COPY CODE
+                <button type="button" class="btn-gen" onclick="copyCode()">
+                    ✨ GENERATE & COPY HTML
                 </button>
-                <textarea id="finalCode" style="height: 0; opacity: 0; position: absolute;"></textarea>
+                <textarea id="finalCode" style="opacity:0; height:0; position:absolute;"></textarea>
 
             </div>
         </div>
 
-        <div class="panel preview-panel">
-            <div class="preview-header">LIVE ANDROID PREVIEW</div>
-            <div id="previewContainer">
-                <p style="text-align: center; color: #555; margin-top: 50%;">Waiting for input signal...</p>
+        <div class="preview-area">
+            <div class="phone-mockup">
+                <div class="phone-notch"></div>
+                <div id="previewContainer">
+                    <div style="text-align:center; padding-top:60%; opacity:0.5;">
+                        Start typing to preview...
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -396,123 +369,107 @@
 
 <script>
     // --- APP LOGIC ---
-
-    function addLinkInput(title = "", sub = "", url = "", icon = "📦") {
-        const container = document.getElementById('downloadsContainer');
+    function addLink(title = "", sub = "", url = "", icon = "📦") {
         const div = document.createElement('div');
-        div.className = 'link-item';
+        div.className = 'link-row';
         div.innerHTML = `
-            <button class="remove-btn" onclick="this.parentElement.remove(); generatePost()">x</button>
-            <input type="text" class="dl-title" placeholder="Button Title" value="${title}" oninput="generatePost()" style="grid-column: span 2">
-            <input type="text" class="dl-sub" placeholder="Subtitle" value="${sub}" oninput="generatePost()">
-            <select class="dl-icon" onchange="generatePost()">
-                <option value="📦" ${icon === '📦' ? 'selected' : ''}>📦</option>
-                <option value="🔧" ${icon === '🔧' ? 'selected' : ''}>🔧</option>
-                <option value="📁" ${icon === '📁' ? 'selected' : ''}>📁</option>
-                <option value="🔗" ${icon === '🔗' ? 'selected' : ''}>🔗</option>
+            <button class="del-btn" onclick="this.parentElement.remove(); generate()">×</button>
+            <input type="text" class="dl-t" placeholder="Title" value="${title}" oninput="generate()" style="flex:2">
+            <input type="text" class="dl-s" placeholder="Sub" value="${sub}" oninput="generate()" style="flex:1">
+            <select class="dl-i" onchange="generate()">
+                <option value="📦" ${icon==='📦'?'selected':''}>📦</option>
+                <option value="🔧" ${icon==='🔧'?'selected':''}>🔧</option>
+                <option value="📁" ${icon==='📁'?'selected':''}>📁</option>
             </select>
-            <input type="text" class="dl-url" placeholder="URL" value="${url}" oninput="generatePost()" style="grid-column: span 2">
+            <input type="text" class="dl-u" value="${url}" style="display:none">
         `;
-        container.appendChild(div);
-        generatePost();
+        document.getElementById('dlContainer').appendChild(div);
+        generate();
     }
 
-    // Initialize
     window.onload = function() {
-        addLinkInput("Key System V3", "Java & XML", "", "📦");
-        addLinkInput("MT Manager", "Latest Version", "https://t.me/dp_mods", "📁");
-        // Set Default Data
+        addLink("Key System V3", "Java & XML", "", "📦");
+        addLink("MT Manager", "Latest", "https://t.me/dp_mods", "📁");
+        // Default Thumbnail
         document.getElementById('thumbUrl').value = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi5a9Aem6F06FvnHWM98smFD_OHKux4voThwVZlmNTRbdtb_vstvOmlAX1XI5UaY38NLVvxv1glJoIkY3zVJvzCMgGdGlyZrMNE1r2adlrxhAFOFi5Pwoj7SSa-3CySHU2sqzDPysAjNdJts_6G3b_GQHzIkvG9o1eEmzhudSF6ge8ey23Of5Ej8dksupNo/s1280/Dark%20Blue%20and%20Yellow%20Bold%20Modern%20Professional%20Attractive%20YouTube%20Thumbnail.png";
-        generatePost();
-    };
+        generate();
+    }
 
-    function generatePost() {
-        // Gather Data
+    function generate() {
         const thumb = document.getElementById('thumbUrl').value;
         const title = document.getElementById('postTitle').value;
-        const subtitle = document.getElementById('postSubtitle').value;
+        const sub = document.getElementById('postSubtitle').value;
         const intro = document.getElementById('introText').value;
-        const featuresRaw = document.getElementById('featuresList').value;
-        const pass = document.getElementById('filePassword').value;
-        const tags = document.getElementById('seoTags').value;
+        const featRaw = document.getElementById('featuresList').value;
+        const pass = document.getElementById('pass').value;
+        const tags = document.getElementById('tags').value;
 
-        // Process Features
-        let featuresHTML = "";
-        featuresRaw.split('\n').forEach(line => {
-            if(line.trim()) {
-                let fmt = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-                featuresHTML += `<li>${fmt}</li>\n`;
-            }
+        let featHTML = "";
+        featRaw.split('\n').forEach(l => {
+            if(l.trim()) featHTML += `<li>${l.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</li>`;
         });
 
-        // Process Links
-        let downloadsHTML = '<div class="dp-download-grid">';
-        document.querySelectorAll('.link-item').forEach(group => {
-            const t = group.querySelector('.dl-title').value;
-            const s = group.querySelector('.dl-sub').value;
-            const u = group.querySelector('.dl-url').value;
-            const i = group.querySelector('.dl-icon').value;
-            if(t) {
-                downloadsHTML += `
-    <a href="${u}" class="dp-glass-btn" target="_blank">
-        <span class="dp-btn-icon">${i}</span>
-        <div class="dp-btn-text">
-            <span class="dp-btn-title">${t}</span>
-            <span class="dp-btn-sub">${s}</span>
-        </div>
-        <span class="dp-arrow">➔</span>
-    </a>`;
-            }
+        let dlHTML = '<div class="dp-download-grid">';
+        document.querySelectorAll('.link-row').forEach(row => {
+            const t = row.querySelector('.dl-t').value;
+            const s = row.querySelector('.dl-s').value;
+            const u = row.querySelector('.dl-u').value || "#"; // Fallback URL
+            const i = row.querySelector('.dl-i').value;
+            if(t) dlHTML += `
+            <a href="${u}" class="dp-glass-btn" target="_blank">
+                <span class="dp-btn-icon">${i}</span>
+                <div class="dp-btn-text"><span class="dp-btn-title">${t}</span><span class="dp-btn-sub">${s}</span></div>
+                <span class="dp-arrow">➔</span>
+            </a>`;
         });
-        downloadsHTML += '</div>';
+        dlHTML += '</div>';
 
-        // THE TEMPLATE (Output)
         const template = `
 <style>
-/* DPMods V4 Premium Style */
-.rainbow-heading { background: linear-gradient(to right, #66ff66, #00ffff, #6666ff, #ff00ff, #ff6666, #ffff00, #66ff66); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rainbow-scroll 6s linear infinite; }
+/* DPMods V4 Anime Style */
+.rainbow-heading { background: linear-gradient(to right, #ff9ff3, #feca57, #ff6b6b, #48dbfb, #1dd1a1); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rainbow-scroll 6s linear infinite; }
 @keyframes rainbow-scroll { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
-.dpmods-post-container { background: none; line-height: 1.7; font-family: 'Segoe UI', sans-serif; color: #f1f1f1; }
-.dpmods-post-container h4 { border-bottom: 2px solid #3b3054; padding-bottom: 8px; margin-top: 30px; font-weight: bold; font-size: 1.2em; color: #e0e0e0; }
-.dpmods-post-container ul { list-style: none; background: #231a33; border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 0, 204, 0.2); }
-.dpmods-post-container ul li { margin-bottom: 12px; padding-left: 1.5em; position: relative; color: #d1d1d1; }
-.dpmods-post-container ul li::before { content: "⚡"; position: absolute; left: 0; }
-.dpmods-post-container a { color: #ff00cc; text-decoration: none; font-weight: bold; }
+.dpmods-post-container { background: none; line-height: 1.7; font-family: 'Poppins', sans-serif; color: #f1f1f1; }
+.dpmods-post-container h4 { border-bottom: 2px solid #5f27cd; padding-bottom: 8px; margin-top: 30px; font-weight: bold; font-size: 1.2em; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+.dpmods-post-container ul { list-style: none; background: rgba(30, 30, 40, 0.8); border-radius: 16px; padding: 24px; border: 1px solid rgba(255, 255, 255, 0.1); }
+.dpmods-post-container ul li { margin-bottom: 12px; padding-left: 1.5em; position: relative; color: #dfe6e9; }
+.dpmods-post-container ul li::before { content: "✨"; position: absolute; left: 0; }
+.dpmods-post-container a { color: #54a0ff; text-decoration: none; font-weight: bold; }
 /* Buttons */
 .dp-download-grid { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
-.dp-glass-btn { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(106, 17, 203, 0.2), rgba(255, 0, 136, 0.2)); border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #d400ff; padding: 15px 20px; border-radius: 12px; text-decoration: none !important; transition: 0.3s; backdrop-filter: blur(10px); }
-.dp-glass-btn:hover { transform: translateY(-3px); border-left-color: #00ffff; background: linear-gradient(135deg, rgba(106, 17, 203, 0.4), rgba(255, 0, 136, 0.4)); }
+.dp-glass-btn { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)); border: 1px solid rgba(255, 255, 255, 0.1); border-left: 4px solid #5f27cd; padding: 16px 20px; border-radius: 16px; text-decoration: none !important; transition: 0.3s; backdrop-filter: blur(10px); }
+.dp-glass-btn:hover { transform: translateX(5px); border-left-color: #48dbfb; background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)); }
 .dp-btn-title { display:block; font-weight: bold; font-size: 16px; color: #fff !important; }
-.dp-btn-sub { font-size: 12px; color: #ffccff !important; opacity: 0.8; }
+.dp-btn-sub { font-size: 12px; color: #c8d6e5 !important; opacity: 0.8; }
 .dp-btn-icon { font-size: 24px; margin-right: 15px; }
 .dp-arrow { color: #fff; opacity: 0.7; font-size: 20px; }
 /* Password */
-.dp-password-container { background: linear-gradient(145deg, #2a203b, #1e1628); border-radius: 12px; padding: 20px; margin-top: 30px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-.dp-unlock-btn { background: linear-gradient(90deg, #ff00cc, #333399); color: white; padding: 10px 25px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-.dp-password-text { display: none; margin-top:10px; font-size: 18px; color: #00ffff; font-weight: bold; text-align: center; border: 1px dashed #00ffff; padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.3); }
+.dp-password-container { background: linear-gradient(145deg, #2d3436, #000000); border-radius: 16px; padding: 20px; margin-top: 30px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.dp-unlock-btn { background: linear-gradient(90deg, #5f27cd, #341f97); color: white; padding: 12px 28px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(95, 39, 205, 0.4); }
+.dp-password-text { display: none; margin-top:15px; font-size: 18px; color: #48dbfb; font-weight: bold; text-align: center; border: 2px dashed #48dbfb; padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.3); }
 </style>
 
 <div class="dpmods-post-container">
     <div class="separator" style="clear: both; text-align: center;">
-        <img border="0" src="${thumb}" width="640" style="border-radius: 10px; max-width:100%; height:auto;" />
+        <img border="0" src="${thumb}" width="640" style="border-radius: 16px; max-width:100%; height:auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
     </div><br />
     
     <div class="separator" style="clear: both; text-align: center;">
         <span style="text-align: left;">🛡️ </span>
-        <strong style="text-align: left;">${title} — ${subtitle} | By DPMods</strong>
+        <strong style="text-align: left;">${title} — ${sub} | By DPMods</strong>
     </div>
 
     <p>${intro}</p>
 
     <h4 class="rainbow-heading">✨ <strong>Features:</strong></h4>
-    <ul>${featuresHTML}</ul>
+    <ul>${featHTML}</ul>
 
     <h4>✨ <strong>Download Section:</strong></h4>
-    ${downloadsHTML}
+    ${dlHTML}
 
     <div class="dp-password-container">
         <div id="dp-lock-wrapper">
-            <h4 style="margin-top:0; border:none; color:#eee;">🔐 File Password:</h4>
+            <h4 style="margin-top:0; border:none; color:#eee; font-size:14px;">🔐 File Password Protection:</h4>
             <button class="dp-unlock-btn" onclick="window.revealPassword()">Unlock Password ⏳</button>
         </div>
         <div class="dp-password-text" id="dp-password-result"></div>
@@ -520,15 +477,13 @@
 
     <h4>💬 <strong>Connect with DPMods:</strong></h4>
     <p>
-        🌐 <strong>Website:</strong> <a href="https://www.dpmods.com">https://www.dpmods.com</a><br />
-        📢 <strong>Telegram Channel:</strong> <a href="https://t.me/dp_mods">https://t.me/dp_mods</a><br />
-        🎥 <strong>YouTube:</strong> <a href="https://www.youtube.com/@dpmods">https://www.youtube.com/@dpmods</a>
+        🌐 <strong>Website:</strong> <a href="https://www.dpmods.com">DPMods.com</a><br />
+        📢 <strong>Telegram:</strong> <a href="https://t.me/dp_mods">@dp_mods</a><br />
+        🎥 <strong>YouTube:</strong> <a href="https://www.youtube.com/@dpmods">DPMods YT</a>
     </p>
-
-    <p>💥 <strong>Like, Share & Subscribe</strong>! 💥</p>
     
     <h4>🔖 <strong>Tags</strong></h4>
-    <p>${tags}</p>
+    <p style="font-size:12px; color:#aaa;">${tags}</p>
 </div>
 
 <script>
@@ -537,27 +492,25 @@ window.revealPassword = function() {
     var wrapper = document.getElementById('dp-lock-wrapper');
     var result = document.getElementById('dp-password-result');
     if (!btn || !wrapper || !result) return;
-    btn.innerHTML = "Wait 5s... 🔄"; btn.style.opacity = "0.7"; btn.disabled = true;
+    btn.innerHTML = "Processing... 🔄"; btn.style.opacity = "0.7"; btn.disabled = true;
     setTimeout(function() {
         wrapper.style.display = 'none'; result.style.display = 'block';
-        result.innerHTML = "🔑 Password: <span style='color: #66ff66; font-size: 22px; margin-left: 10px;'>${pass}</span>";
+        result.innerHTML = "🔑 Password: <span style='color: #55efc4; font-size: 22px; margin-left: 10px;'>${pass}</span>";
     }, 5000);
 };
 document.addEventListener("DOMContentLoaded", function() {});
 <\/script>`;
-
-        // Update UI
+        
         document.getElementById('finalCode').value = template;
-        const preview = document.getElementById('previewContainer');
-        preview.innerHTML = template;
+        document.getElementById('previewContainer').innerHTML = template;
     }
 
     function copyCode() {
-        generatePost(); // Ensure latest
+        generate();
         const c = document.getElementById("finalCode");
         c.select();
         navigator.clipboard.writeText(c.value);
-        alert("✅ ENGINE OUTPUT COPIED!");
+        alert("✅ Code Copied!");
     }
 </script>
 </body>
